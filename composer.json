@@ -1,0 +1,8 @@
+{
+    "name": "curlybytes/codeigniter3-baseline",
+    "description": "Codeigniter 3 baseline template",
+    "type": "project",
+    "require": {
+       "nesbot/carbon": "^2.57"
+    }
+ }

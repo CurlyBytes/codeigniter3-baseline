@@ -1,21 +1,29 @@
 ###############################################################################
 #                          Generated on phpdocker.io                          #
 ###############################################################################
-version: '3.1'
+---
+version: "3.1"
 services:
+
     webserver:
-        image: 'nginx:alpine'
+        image: 'nginx:${NGINXVERSION}'
+        container_name: ${APPNAME}_webserver
         working_dir: /application
         volumes:
-            - './public:/application'
-            - './phpdocker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf'
+            - '.:/application'
+            - './scripts/phpdocker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf'
+            - ./app/logs/nginx:/var/logs/nginx
         ports:
-            - '38000:80'
+            - '${WEBSERVERPORT}:80'
+
 
     php-fpm:
-        build: phpdocker/php-fpm
+        container_name: ${APPNAME}_php
+        build: ./
         working_dir: /application
         volumes:
-            - './public:/application'
-            - './phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/8.3/fpm/conf.d/99-overrides.ini'
-            - './phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/8.3/cli/conf.d/99-overrides.ini'
+            - '.:/application'
+            - './scripts/phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini'
+
+        environment:
+            PHP_IDE_CONFIG: "serverName=Docker"   
