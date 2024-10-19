@@ -1,0 +1,44 @@
+<phpunit
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="phpunit.xsd"
+	bootstrap="./Bootstrap.php"
+	backupGlobals="true"
+
+
+	verbose="true"
+	colors="true">
+		 
+	<testsuites>
+        <testsuite name="unit">
+            <directory suffix="test.php">./models/</directory>
+			<directory suffix="test.php">./libraries/</directory>
+			<directory suffix="test.php">./helpers/</directory>
+			<exclude>./_ci_phpunit_test</exclude>
+        </testsuite>
+        <testsuite name="integration">
+            <directory suffix="test.php">./controllers/</directory>
+			<directory suffix="test.php">./hooks/</directory>
+			<directory suffix="test.php">./mocks/</directory>
+			<exclude>./_ci_phpunit_test</exclude>
+        </testsuite>
+	</testsuites>
+	<coverage cacheDirectory="../app/cache/phpunittest" processUncoveredFiles="true" includeUncoveredFiles="true">
+		<include>
+			<directory suffix=".php">../app/controllers</directory>
+			<directory suffix=".php">../app/models</directory>
+			<directory suffix=".php">../app/libraries</directory>
+			<directory suffix=".php">../app/helpers</directory>
+			<directory suffix=".php">../app/hooks</directory>
+		</include>
+		<report>
+			<html outputDirectory="../app/logs/build/coverage/html" lowUpperBound="50" highLowerBound="90"/>
+			<clover outputFile="../app/logs/build/coverage/clover.xml"/>
+			<xml outputDirectory="../app/logs/build/coverage/xml"/>
+		</report>
+	</coverage>
+	<logging>
+		<junit outputFile="../app/logs/build/logs/junit.xml"/>
+		<testdoxHtml outputFile="../app/logs/build/logs/testdox.html"/>
+		<testdoxXml outputFile="../app/logs/build/logs/testdox.xml"/>
+	</logging>	
+</phpunit>
