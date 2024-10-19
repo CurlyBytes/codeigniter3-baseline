@@ -1,0 +1,82 @@
+#Bare minimum
+trigger:
+  branches:
+    include:
+    - main
+    - release/*
+    - feat/*
+
+schedules:
+- cron: "0 17 * * *" # 00:00 AEST is 3pmx 08:00 UTC
+  displayName: 'Daily Build'
+  always: 'true'
+  branches:
+    include:
+    - main
+  
+resources:
+  repositories:
+  - repository: self
+    type: git
+    ref: main
+
+lockBehavior: sequential
+variables:
+- name: phpVersion
+  value: 7.4
+
+stages:
+- stage: Build
+  displayName: 'Build'
+  jobs:
+
+  - job: PHPBuild
+    displayName: 'PHP Build'
+    pool:
+      vmImage: ubuntu-latest
+
+    steps:     
+    - script: |
+        sudo update-alternatives --set php /usr/bin/php$(phpVersion)
+        sudo update-alternatives --set phar /usr/bin/phar$(phpVersion)
+        sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpVersion)
+        sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
+        sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
+        php -version 
+      displayName: 'Task - Set PHP Version'
+
+    - script: composer install --no-interaction --prefer-dist
+      displayName: 'Task - Composer Install'
+
+    - script: vendor/bin/phpunit -c tests/
+      displayName: 'Task - Unit Test'
+        
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/junit.xml'
+        mergeTestResults: true
+        testRunTitle: 'Task - Run Unit Test'
+
+    - task: CopyFiles@2
+      displayName: 'Task - Copy App/Vendor/Public file'
+      inputs:
+        SourceFolder: '$(system.defaultWorkingDirectory)'
+        Contents: |
+          vendor/**
+          app/**
+          public/**
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/webapp'
+
+    - task: ArchiveFiles@2
+      displayName: 'Task - Zip WebApp'
+      inputs:
+        rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/webapp'
+        includeRootFolder: false
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Task - Publish WebApp'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'

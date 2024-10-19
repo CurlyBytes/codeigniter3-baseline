@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tests>
+  <test className="Welcome_test" methodName="test_index" prettifiedClassName="Welcome_test" prettifiedMethodName="Index" status="0" time="0.014604667" size="-1" groups="Kenji Suzuki &lt;https://github.com/kenjis&gt;">
+    <group name="Kenji Suzuki &lt;https://github.com/kenjis&gt;"/>
+  </test>
+  <test className="Welcome_test" methodName="test_method_404" prettifiedClassName="Welcome_test" prettifiedMethodName="Method 404" status="0" time="0.004263541" size="-1" groups="Kenji Suzuki &lt;https://github.com/kenjis&gt;">
+    <group name="Kenji Suzuki &lt;https://github.com/kenjis&gt;"/>
+  </test>
+  <test className="Welcome_test" methodName="test_APPPATH" prettifiedClassName="Welcome_test" prettifiedMethodName="A p p p a t h" status="0" time="0.001194084" size="-1" groups="Kenji Suzuki &lt;https://github.com/kenjis&gt;">
+    <group name="Kenji Suzuki &lt;https://github.com/kenjis&gt;"/>
+  </test>
+</tests>
