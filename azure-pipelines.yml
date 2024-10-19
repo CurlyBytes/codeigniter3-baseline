@@ -1,4 +1,4 @@
-#Bare minimum Random commit
+#With Containers
 trigger:
   branches:
     include:
@@ -19,6 +19,9 @@ resources:
   - repository: self
     type: git
     ref: main
+  containers:
+  - container: phpwithcomposer
+    image: stephenneal/php-composer:7.4-v4
 
 lockBehavior: sequential
 variables:
@@ -44,13 +47,19 @@ stages:
         sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
         php -version 
       displayName: 'Task - Set PHP Version'
+      target:
+        container: phpwithcomposer
 
     - script: composer install --no-interaction --prefer-dist
       displayName: 'Task - Composer Install'
+      target:
+        container: phpwithcomposer
 
     - script: vendor/bin/phpunit -c tests/
       displayName: 'Task - Unit Test'
-        
+      target:
+        container: phpwithcomposer
+
     - task: PublishTestResults@2
       inputs:
         testResultsFormat: 'JUnit'
