@@ -1,4 +1,4 @@
-#With Containers
+#Finale
 trigger:
   branches:
     include:
@@ -19,6 +19,10 @@ resources:
   - repository: self
     type: git
     ref: main
+  - repository: common
+    type: github
+    name: CurlyBytes/devsecops-utility
+    endpoint: github-personal-cocoy
   containers:
   - container: phpwithcomposer
     image: stephenneal/php-composer:7.4-v4
@@ -27,6 +31,12 @@ lockBehavior: sequential
 variables:
 - name: phpVersion
   value: 7.4
+- name: instrumentationKey
+  value: d85ca38f-bcbe-43b2-adc4-1503f24f27d8
+- name: RunTask
+  value: true
+- name: MonitoringStart
+  value: "00.00.00"
 
 stages:
 - stage: Build
@@ -60,12 +70,17 @@ stages:
       target:
         container: phpwithcomposer
 
-    - task: PublishTestResults@2
-      inputs:
-        testResultsFormat: 'JUnit'
-        testResultsFiles: '**/junit.xml'
+    - template: src/pipeline-as-code/azure-devops/components/task_publish_test_results.yml@common
+      parameters:
+        condition: succeededOrFailed()
+        displayName: "Task - Publish Pester Tests Result"
+        testResultsFormat: "JUnit"
+        testResultsFiles: "**/junit.xml"
         mergeTestResults: true
-        testRunTitle: 'Task - Run Unit Test'
+        failTaskOnFailedTests: true
+        testRunTitle: "UnitTest_$(Build.BuildId)_$(Agent.OS)_$(Agent.OSArchitecture)($(Agent.MachineName))"
+        buildPlatform: "Any CPU"
+        buildConfiguration: "Release"
 
     - task: CopyFiles@2
       displayName: 'Task - Copy App/Vendor/Public file'
