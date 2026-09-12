@@ -8,6 +8,6 @@
 		"nesbot/carbon": "^2.57"
 	},
 	"require-dev": {
-		"mikey179/vfsstream": "1.1.*"
+		"mikey179/vfsstream": "1.6.*"
 	}
 }
